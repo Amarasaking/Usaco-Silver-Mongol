@@ -1,0 +1,114 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+/*
+3 heseg 2, 2 ooroo holbogdono
+esuul neg tsegt 3 uulaa holbogdono gedgiig ashiglaj bodno
+*/
+int main() {
+//  freopen("pageant.in", "r", stdin);
+// freopen("pageant.out", "w", stdout);
+	ll n, m, x, y, j, i, r, s;
+	
+	cin >> n >> m;
+	
+	ll a[52][52] = {0};
+	string str[52];
+	
+	s = 1;
+	for (i = 1; i <= n; i ++) {
+		cin >> str[i];
+		str[i] = "." + str[i] + ".";
+	}	
+	str[0] = str[n + 1] = "";
+	for (i = 0; i <= m + 1; i ++) {
+		str[0] += ".";
+		str[n + 1] += ".";
+	}
+	queue <ll> X, Y;
+	// 3 hesgee 1, 2, 3- aar temdeglej bn
+	for (i =1; i <= n; i++) {
+		for (j = 1; j <= m; j ++) {
+			if ( str[i][j] == 'X' && a[i][j] == 0) {
+				X.push(i);
+				Y.push(j);
+				a[i][j] = s;
+				while ( !X.empty()) {
+					x = X.front();
+					y = Y.front();
+					X.pop();
+					Y.pop();
+					if ( str[x - 1][y] == 'X' && a[x - 1][y] == 0) {
+						a[x - 1][y] = s;
+						X.push(x - 1);
+						Y.push(y);
+					}
+					if ( str[x + 1][y] == 'X' && a[x + 1][y] == 0) {
+						a[x + 1][y] = s;
+						X.push(x + 1);
+						Y.push(y);
+					}
+					if ( str[x][y - 1] == 'X' && a[x][y - 1] == 0) {
+						a[x][y - 1] = s;
+						X.push(x);
+						Y.push(y - 1);
+					}
+					if ( str[x][y + 1] == 'X' && a[x][y + 1] == 0) {
+						a[x][y + 1] = s;
+						X.push(x);
+						Y.push(y + 1);
+					}
+				}
+				s ++;
+			}
+		}
+	}
+	// 3 hesgin 2, 2 oor hamgin baga zaig olno
+	ll neghoyr, I, J, neggurav, hoyrgurav;
+	neghoyr = neggurav = hoyrgurav = 1e9;
+	for (i= 1; i <= n; i ++) {
+		for (j = 1; j <= m; j ++) {
+			for ( I = 1; I <= n; I ++) {
+				for (J = 1; J <=m; J ++) {
+					if ( a[i][j] == 1 && a[I][J] == 2) {
+						neghoyr = min(neghoyr, abs(i - I) + abs(j - J) - 1);
+					}
+					if ( a[i][j] == 1 && a[I][J] == 3) {
+						neggurav = min(neggurav, abs(i - I) + abs(j - J) - 1);
+					}
+					if ( a[i][j] == 2 && a[I][J] == 3) {
+						hoyrgurav = min(hoyrgurav, abs(i - I) + abs(j - J) - 1);
+					}
+					
+				}
+			}
+		}
+	}
+	ll ans = neghoyr + neggurav + hoyrgurav;
+//hoyriig l holbohod hangalttai tul hamgin baga hoyr
+	ans -= max (neghoyr, max(neggurav, hoyrgurav));
+	ll neg, hoyr, gurav;
+	
+	for (i= 1; i <= n; i ++) {
+		for (j = 1; j <= m; j ++) {
+			neg = hoyr = gurav = 1e9;
+			for ( I = 1; I <= n; I ++) {
+				for (J = 1; J <=m; J ++) {
+					if ( a[i][j] == 0 && a[I][J] == 1) {
+						neg = min(neg, abs(i - I) + abs(j - J) - 1);
+					}
+					if ( a[i][j] == 0 && a[I][J] == 2) {
+						hoyr = min(hoyr, abs(i - I) + abs(j - J) - 1);
+					}
+					if ( a[i][j] == 0 && a[I][J] == 3) {
+						gurav = min(gurav, abs(i - I) + abs(j - J) - 1);
+					}
+					
+				}
+			}
+			ans = min(ans, neg + hoyr + gurav + 1);
+		}
+	}
+	cout << ans << endl;
+}
