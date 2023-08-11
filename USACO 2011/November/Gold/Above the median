@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+/*
+Ene bodlogo deer X-ees baga toonuudiig -1 ih bolon tentsuu toonuudiig +1 gewel niilber n 0-ees ih baidag subsequence-iin toog oloh bolno
+Odoo bodlogo maani 1, -1 -ees burdsen massive-aas niilber n surug bish baih subseq uudiin too tul
+Prefix Sum ashiglad INverse-uudiin toog olhod bolno
+*/
+struct Node{
+	int sum = 0;
+	Node *l, *r;
+};
+Node *Tre = new Node();
+int Find(Node *P, int l, int r, int st, int fn) {
+	if ( st <= l && r <= fn) {
+		return (P -> sum);		
+	}
+	if ( r < st || l > fn) {
+		return 0;
+	}
+	
+	if ( !P -> l) {
+		P -> l = new Node();
+	}
+	if ( !P -> r) {
+		P -> r = new Node();
+	}
+	
+	int mid = (l + r)/2;
+	
+	return Find(P -> l, l, mid, st, fn) + Find(P -> r, mid + 1, r, st, fn);
+}
+void Uptade(Node *P, int l, int r, int x) {
+	if ( l == r) {
+		P -> sum = P -> sum + 1;
+		return ;
+	}
+	
+	if ( !(P -> r)) {
+		P -> r = new Node();
+	}
+	if ( !(P -> l)) {
+		P -> l = new Node();
+	}	
+	
+	ll mid = (l + r)/2;
+	if ( x <= mid) {
+		Uptade(P -> l, l, mid, x);
+	}
+	else {
+		Uptade(P -> r, mid + 1, r, x);
+	}
+	P -> sum = P -> r -> sum + P -> l -> sum;
+	return ;
+}
+
+int main() {
+	ll n, m, x, y, j, Size, ans, l, i, r, s;
+	
+	cin >> n >> m;
+	
+	ll a[n + 2];
+	s = n;
+	Uptade(Tre, 0, 2 * n, s);
+	ans = 0;
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];
+		if ( a[i] >= m) s ++;
+		else s--;
+		ans += Find(Tre, 0, 2 * n, 0, s);
+		Uptade(Tre, 0, 2 * n, s);
+	}
+	cout << ans << endl;
+}
