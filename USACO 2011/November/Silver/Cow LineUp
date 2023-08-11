@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+/*
+Two Pointer
+r-iin huwid hamgiin suuliin l-g olno(Massivin buh element l-r zawsart bh ystoi
+*/
+int main() {
+	ll n, m, x, y, j, Size, ans, l, i, r, s;
+	
+	cin >> n;
+	
+	pair < ll , ll > P[n + 2];
+	set < ll > S, ss;
+	unordered_map < ll, ll > A;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> P[i].first >> P[i].second;
+		S.insert(P[i].second);
+	}
+	// S seteer Niit ylgaatai elementin toog olj baina
+	// Two pointer tul sort
+	sort ( P + 1, P + n + 1);
+	r = 1;
+	while ( r <= n && ss.size() < S.size()) {
+		A[P[r].second] ++;
+		ss.insert(P[r].second);
+		r ++;
+	}
+	// BUh element orson hamgin ehni prefix olno (ened l-n zaawal neg bh albagaui gedgees l-ee uptade hin
+	
+	l = 1;
+	while ( A[P[l].second] > 1) {
+		A[P[l].second] --;
+		l ++;
+	}
+
+	ans = P[r - 1].first - P[l].first + 1;
+	Size = ss.size();
+
+	while ( r <= n) {
+		if ( A[P[r].second] == 0) {
+			Size ++;
+		}
+		A[P[r].second] ++;
+		while ( A[P[l].second] > 1) {
+			A[P[l].second] --;
+			l ++;
+		}
+		ans =min(ans, P[r].first - P[l].first + 1);
+		r ++;
+	}
+	cout << ans - 1 << endl;
+	
+}
