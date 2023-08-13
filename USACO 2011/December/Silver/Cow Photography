@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+/*
+(X id-tai unee Y id-tai unee )jinhene zurag deer X-n Y-iin urd baiwal ene 5 zuragiin ydj 3-t n Y-iin urd baih ystoi gedgiig harwal amarhan bodogdono
+
+*/
+ll a[7][20004];
+map < ll , ll > b[8];
+
+bool cmp(ll x, ll y) {
+	ll s = 0;
+	for (int i =1; i <= 5; i ++) {
+		if ( b[i][x] < b[i][y]) s ++;
+	}
+	return s > 2;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n;
+	vector < ll > v;
+	
+	for (i = 1; i <= 5; i ++) {
+		for (j = 1; j <= n; j ++) {
+			cin >> a[i][j];
+// mur deh uneenii bairlaliig olj bn
+			b[i][a[i][j]] = j;
+// sort hiih n-uneegee olj bn
+			if ( i == 5) {
+				v.push_back(a[i][j]);
+			}
+		}
+	}
+// sorting
+	sort ( v.begin(), v.end(), cmp);
+	for ( ll I : v) cout << I << endl;
+}
