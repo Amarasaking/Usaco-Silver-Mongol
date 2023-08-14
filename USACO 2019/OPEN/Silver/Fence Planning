@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+/*
+hoyr node-iig chiglelgui holboj baina gedeg n Union FInd algorithm ashiglah bolomjtoi gesen ug
+ataman-daa hamgiin tom node
+x-n uurtein holbogdson buh nodeuudiin x-uudiin hamgiin baga n
+X, y, Y - n mun adil
+tegeed union hiigeed suuld n 1-n hurtel for-dood shalgaad bolo
+*/
+int ataman[100002], X[100002], x[100002], Y[100002], y[100002];
+vector < int > v[100002];
+int vis[100002] = {0};
+queue < int > q;
+int Get(int xx) {
+	if ( xx == ataman[xx]) return xx;
+	return ataman[xx] = Get(ataman[xx]);
+}
+void Union(int xx, int yy) {
+	xx = Get(xx);
+	yy = Get(yy);
+	if ( xx == yy) return ;
+	ataman[xx] = yy;
+	X[yy] = max (X[yy], X[xx]);
+	x[yy] = min(x[yy], x[xx]);
+	Y[yy] = max (Y[yy], Y[xx]);
+	y[yy] = min(y[yy], y[xx]);
+	return ;
+}
+int main() {
+	freopen("fenceplan.in", "r", stdin);
+	freopen("fenceplan.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	int t, n, m, ans, MxX, MxY, MnX, MnY, s, sum, Size, r, p, i, j;
+	
+	scanf("%d %d",& n ,& m);
+	
+
+	for (i = 1; i <= n; i ++) {
+		scanf("%d %d",& r ,& p);
+		x[i] = X[i] = r;
+		y[i] = Y[i] = p;
+		ataman[i] = i;
+	}
+
+	for (i = 1; i <= m; i ++) {
+		scanf("%d %d",& r ,& p);
+		Union(r, p);
+	}
+	
+	ans = 1e10;
+	
+	for (i = 1; i <= n; i++) {
+		r = Get(i);
+		ans = min(ans, X[r] - x[r] + Y[r] - y[r]);
+	}
+	
+	cout << ans * 2 << endl;
+}
