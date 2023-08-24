@@ -7,7 +7,7 @@ ene bodlogo deer ali n anhnaasaa baisan bj boloh we gedgiig olhiin tuld ali n ba
 tegheer ali n bolohgui we gedgiig yj oloh ve geheer
 ymar neg k toonii huwid (1 <= k <=9)
 n*n husnegtdeeh hamgin ih x, y hamgiin baga x, y-iig olood
-tegsh untsugt uusgeh ba
+tegsh untsugt uusgeh ba 
 ene dund k-aas uur too baiwal ene-n k hiisnii daraa hiisen boloh tul anhniih bish bolno geh meteer ylgana
 */
 int main() {
