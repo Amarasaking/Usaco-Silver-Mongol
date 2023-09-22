@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+vector < ll > b(5);
+ll mod = 1e9 + 7;
+struct VectorHasher {
+    int operator()(const vector<ll> &V) const {
+        ll hash = V.size();
+        for(auto &i : V) {
+            hash ^= i + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        }
+        return hash;
+    }
+};
+unordered_map < vector < ll > , ll , VectorHasher> M;
+void Go(vector < ll > & b) {
+	ll s = 0, i, r, j;
+	
+	for (i = 1; i < 32; i ++) {
+		vector < ll > q;
+		r = 1;
+		for (j = 0; j < 5; j ++) {
+			if ( ll(i & r) == r) {
+				q.push_back(b[j]);
+			}
+			r = r * 2;
+		}
+		M[q] ++;
+	}
+	
+	return ;
+}
+ll Find(ll x) {
+	return (x * (x - 1))/2;
+}
+int main() {
+	freopen("cowpatibility.in", "r", stdin);
+	freopen("cowpatibility.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n;
+	
+	for (i = 1; i <= n; i++) {
+		for (j = 0; j < 5; j ++) {
+			cin >> b[j];
+		}
+		sort ( b.begin(), b.end());
+		Go(b);
+	}
+	s = 1;
+	ans = 0;
+	for ( auto& X : M) {
+		s = X.first.size();
+	//	cout << X.second << endl;
+		if ( s % 2 == 1) {
+			ans += (Find(X.second));
+		}
+		else {
+			ans -= (Find(X.second));
+		}
+		
+	}
+	r = Find(n) - ans;
+	cout << r << "\n";
+}
