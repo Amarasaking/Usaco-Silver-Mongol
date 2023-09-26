@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+/*
+x gedeg toon deer gurwuulaa uulzana gedeg sanaag ashiglan
+1-ees bugdruu ochih hamgin bogino zaig olno
+2-ees bugdruu ochih hamgin bogino zaig olno
+n-ees bugdruu ochih hamgin bogino zaig olno
+tgeed x buriin uyd shalgaad hamgiin min-iig olno
+*/
+using namespace std;
+using ll = int ;
+vector < ll > v[40003];
+ll Used[40002], Dused[40002], Bused[40002];
+void Go(ll x) {
+	ll r;
+	queue < ll > q;
+	q.push(x);
+	while(!q.empty()) {
+		r = q.front();
+		q.pop();
+		for ( ll X : v[r]) {
+			if ( Used[X] == 1e9) {
+				Used[X]= Used[r] + 1;
+				q.push(X);
+			}
+		}
+	}
+}
+int main() {
+	freopen("piggyback.in", "r", stdin);
+	freopen("piggyback.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, m, ans,n, s, sum, x, y, r, p, i, j, one, two, both;
+
+	cin >> one >> two >> both >> n >> m;
+	
+	for (i = 1; i <= m; i ++) {
+		cin >> x >> y;
+		v[x].push_back(y);
+		v[y].push_back(x);
+	}
+	for (i = 1; i <= n; i ++) Used[i]= 1e9;
+	Used[1] = 0;
+	Go(1);
+	for ( i =1; i <= n; i ++) {
+		Dused[i] = Used[i];
+		Used[i] = 1e9;
+	}
+	Used[2] = 0;
+	Go(2);
+	for (i = 1; i <= n; i ++) {
+		Bused[i] = Used[i];
+		Used[i] = 1e9;
+	}
+	Used[n] =0;
+	Go(n);
+	ans = 1e9;
+	for (i = 1; i <= n; i ++) {
+		s = Used[i] * both + Bused[i] * two + Dused[i] * one;
+		ans= min(ans, s);
+	}
+	cout << ans << endl;
+	
+}
