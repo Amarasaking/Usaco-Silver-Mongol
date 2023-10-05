@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+
+/*
+A[i]-n i-aas ehleltei hamgin urt subsetiig oloh ba(two pointeroor)
+AA[i]-n i-aas n hurtelh j buriin huwid A[j]-uudiin max gej temdeglehed bodolt shuud orj irne
+*/
+using namespace std;
+using ll = long long ;
+ll A[50003], Max[50003], B[50003], AA[50003];
+int main() {
+	freopen("diamond.in", "r", stdin);
+	freopen("diamond.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, Dis, n, ans, lo, s, Ans, hi, sum, x, y, r, p, i, j, m;
+ 
+	cin >> n >> m;
+ 
+	ll a[n + 2];
+ 
+	for (i = 1; i <= n; i ++) {
+		cin>> a[i];
+	}
+ 
+	sort ( a + 1 , a + n + 1);
+ 
+	lo = 1;
+	hi = 1;
+	while ( lo <= n) {
+		while ( hi + 1 <= n && a[hi + 1] - a[lo] <= m) hi++;
+		A[lo] = hi - lo + 1;
+		B[lo] = hi;
+		lo ++;
+		hi = max (hi, lo);
+	}
+	p = 1;
+	Ans = 1;
+	for(i = n; i >= 1;i --) {
+		AA[i] = max(A[i], AA[i + 1]);
+		Ans = max(Ans, A[i]+ AA[i + A[i]]);
+	}
+ 
+	cout << Ans << endl;
+}
