@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+map < int, int> A;
+int main() {
+		freopen("cardgame.in", "r", stdin);
+	freopen("cardgame.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n;
+	
+	ll a[n + 2];
+	vector < ll > Dused;
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];
+		A[a[i]] ++;
+	}
+	
+	for (i = 1; i <= 2 * n; i ++) {
+		if ( A[i]== 0) {
+			Dused.push_back(i);
+		}
+	}
+	j = n / 2;
+	sort ( a + 1, a + n/2 + 1);
+	ans = 0;
+	for (r = n - 1; r  >= n/2; r --) {
+		while ( j > 0 && Dused[r] < a[j]) j --;
+		if ( j <= 0) break;
+		j--;
+		ans ++;
+	}
+	sort ( a + n/2 + 1, a + n + 1);
+	j = n/2 + 1;
+	for ( r = 0; r < n/2; r ++) {
+		while ( j <= n && Dused[r] > a[j]) j ++;
+		if ( j == n + 1) break;
+		j ++;
+		ans ++;
+	}
+	cout << ans << endl;
+}
