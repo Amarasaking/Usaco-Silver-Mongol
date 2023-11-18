@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+struct Co {
+	ll x, y;
+};
+struct Dis {
+	ll d, i, j;
+};
+bool cmp(Dis& A, Dis& B) {
+	return make_pair(A.d, make_pair(A.i, A.j)) < make_pair(B.d, make_pair(B.i, B.j));
+}
+vector < Dis > v;
+ll ataman[1004], n;
+
+ll Avah(ll x) {
+	if ( x == ataman[x]) return x;
+	return ataman[x] = Avah(ataman[x]);
+}
+
+void Negtgeh(ll x, ll y) {
+	x = Avah(x);
+	y = Avah(y);
+	if ( x > y) swap(x, y);
+	if ( x == y) return ;
+	ataman[y] = x;	
+}
+bool Check(ll x) {
+	for (int i = 1; i <= n; i ++) {
+		ataman[i] = i;
+	}
+	for (int i = 0; i < v.size() && v[i].d <= x; i ++) {
+		Negtgeh(v[i].i, v[i].j);
+	}
+	for (int i = 1; i <= n; i ++) {
+		if ( Avah(i) != 1) return false;
+	}
+	return true;
+}
+int main() {
+	freopen("moocast.in", "r", stdin);
+	freopen("moocast.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, m, ans, mid, lo, hi, s, sum, x, y, r, p, i, j;
+
+	cin >> n;
+	
+	Co C[n + 2];
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> C[i].x >> C[i].y;
+	}
+	
+	for (i = 1; i <= n; i ++) {
+		for (j = i + 1; j <= n; j ++) {
+			r = (C[i].x - C[j].x)*(C[i].x - C[j].x) + (C[i].y - C[j].y)*(C[i].y - C[j].y);
+			Dis D = {r, i, j};
+			v.push_back(D);
+		}
+	}	
+	sort(v.begin(), v.end(), cmp);
+	lo = 0;
+	hi = 1e9;
+	
+	while (lo < hi) {
+		mid = (lo + hi)/2;
+		if (!Check(mid)) lo = mid + 1;
+		else hi = mid;
+	}
+	cout << lo << endl;
+}
