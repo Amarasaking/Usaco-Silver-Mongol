@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+ll CanVisit[502][502] = {0};
+vector < ll > v[502];
+void Dfs(ll node, ll god) {
+	for ( ll X : v[node]) {
+		if ( CanVisit[god][X] == 0) {
+			CanVisit[god][X] = 1;
+			Dfs(X, god);
+		}
+	}
+	return ;
+}
+
+int main() {
+//	freopen("wormsort.in", "r", stdin);
+//	freopen("wormsort.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n;
+	
+	ll a[n + 2][n + 2], b[n + 2][n + 2];
+
+	for (i = 1; i <= n; i ++) {
+		s = 0;
+		for (j = 1; j <= n; j ++) {
+			cin >> a[i][j];
+			if ( a[i][j] == i ) s = 1;
+			if ( s == 0) {
+				v[i].push_back(a[i][j]);
+			}
+		}
+	}
+	
+	for (i = 1; i <= n; i ++) {
+		CanVisit[i][i]= 1;
+		Dfs(i, i);
+	}
+	for (i = 1; i <= n; i ++) {
+		for (j = 1; j <= n; j ++) {
+			r = a[i][j];
+			if (CanVisit[r][i]) break;
+		}
+		cout << a[i][j] << endl;
+	}
+}
