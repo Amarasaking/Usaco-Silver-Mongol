@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+ll ataman[100005];
+ll Avah(ll x) {
+	if ( x == ataman[x]) return x;
+	return ataman[x] = Avah(ataman[x]);
+}
+
+void Negtgeh(ll x, ll y) {
+	x = Avah(x);
+	y = Avah(y);
+	if ( x == y) return ;
+	if (x < y) swap(x, y);
+	ataman[x] = y;
+}
+
+set < ll > Same, Dis;
+
+ll Used[100002];
+vector < ll > D[100005], S[100004];
+
+ll Ans = 1;
+void Dfs(ll x, ll p) {
+	if ( Ans == 0) return ;
+	Used[x] = p;
+	for ( ll X : D[x]) {
+		if ( Used[X] == 0) {
+			Used[X] = 3 - p;
+			Dfs(X, 3 - p);
+		}
+		else {
+			if (Used[X] != (3 - p)) {
+				Ans = 0;
+				return ;
+			}
+		}
+	}
+	for ( ll X : S[x]) {
+		if ( Used[X] == 0) {
+			Used[X] = p;
+			Dfs(X, p);
+		}
+		else {
+			if ( Used[X] != p) {
+		//		cout << X << " " << p << " " << Used[X] << endl;
+				Ans = 0;
+				return ;
+			}
+		}
+	}
+}
+int main() {
+		freopen("revegetate.in", "r", stdin);
+	freopen("revegetate.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n >> m;
+	
+	char ch;
+	for (i = 1; i <= n; i ++) ataman[i] = i;
+	
+	
+	for (i = 1; i <= m; i ++) {
+		cin >> ch >> x >> y;
+		Negtgeh(x, y);
+		if ( ch == 'S') {
+			Same.insert(x);
+			Same.insert(y);
+			S[x].push_back(y);
+			S[y].push_back(x);
+		}
+		else {
+			Dis.insert(x);
+			Dis.insert(y);
+			D[x].push_back(y);
+			D[y].push_back(x);
+		}
+	}
+	
+	Ans = 1;
+	for (i = 1; i <= n; i ++) {
+		if ( Used[i] == 0) {
+			Dfs(i, 1);
+		}
+	}
+	if ( Ans == 0) {
+		cout << 0 << endl;
+		return 0;
+	}
+	set < ll > Cnt;
+	
+	for (i = n; i >= 1; i --) {
+		Cnt.insert(Avah(i));
+	}
+	cout << "1";
+	for (i = 0; i < Cnt.size(); i ++) cout << "0";
+}
