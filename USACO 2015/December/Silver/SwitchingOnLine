@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll CanGo[104][104] = {0}, A[104][104] = {0};
+ll n, m;
+struct Co{
+	ll x, y;
+};
+vector < Co > v[102][102];
+bool In(ll x, ll y) {
+	if ( x >= 1 && x <= n && y >= 1 && y <= m && A[x][y] ==0 && CanGo[x][y] == 1) return true;
+	return false;
+}
+void Dfs(ll x, ll y) {
+	
+	A[x][y] = 1;
+	for ( Co R : v[x][y]) {
+		CanGo[R.x][R.y] = 1;
+		if ( A[R.x + 1][R.y] + A[R.x - 1][R.y] + A[R.x][R.y + 1] + A[R.x][R.y - 1] > 0 && A[R.x][R.y] == 0) Dfs(R.x, R.y);
+	}
+	ll i, j;
+	
+	if ( In(x +1, y)) {
+		Dfs(x + 1, y);
+	}
+	if ( In(x -1, y)) {
+		Dfs(x - 1, y);
+	}
+	if ( In(x, y + 1)) {
+		Dfs(x, y + 1);
+	}
+	if ( In(x, y - 1)) {
+		Dfs(x, y - 1);
+	}
+	return ;
+}
+int main() {
+	freopen("lightson.in", "r", stdin);
+	freopen("lightson.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, ans, sum, x, y, r, i, j, max_p, max_s, mid, lo, hi, x1, y1, x2, y2;
+	cin >> n >> m;
+	for (i = 1; i <= m; i ++) {
+		cin >> x1 >> y1 >> x2 >> y2;
+		v[x1][y1].push_back({x2, y2});
+	}
+	CanGo[1][1] = 1;
+	Dfs(1, 1);
+	ans = 0;
+	for (i = 1; i <= n; i++) {
+		for (j = 1; j <= n; j ++) {
+			ans += CanGo[i][j];
+		}
+	}
+	cout << ans << endl;
+}
