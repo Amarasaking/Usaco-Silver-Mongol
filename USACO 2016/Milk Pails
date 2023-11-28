@@ -1,0 +1,97 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = int;
+ll A[403], B[402][402];
+ll X, Y;
+int main() {
+	freopen("pails.in", "r", stdin);
+	freopen("pails.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll K, M, ans, i, x, y, xx, yy, left;
+	
+	cin >> X >> Y >> K >> M;
+	queue < ll > iks, igreg, Left;
+	
+	iks.push(0);
+	igreg.push(0);
+	Left.push(K);
+	while(!iks.empty()) {
+		x = iks.front();
+		y = igreg.front();	
+		left = Left.front();
+		iks.pop();
+		igreg.pop();
+		Left.pop();
+		A[x + y] = 1;
+		if ( left == 0) continue;
+		left --;
+		if ( B[x][0] == 0) {
+			B[x][0] = 1;
+			iks.push(x);
+			igreg.push(0);
+			Left.push(left);
+		}
+		if ( B[x][Y] == 0) {
+			B[x][Y] = 1;
+			iks.push(x);
+			igreg.push(Y);
+			Left.push(left);
+		}
+		if ( B[0][y] == 0) {
+			B[0][y] = 1;
+			iks.push(0);
+			igreg.push(y);
+			Left.push(left);
+		}
+		if ( B[X][y] == 0) {
+			B[X][y] = 1;
+			iks.push(X);
+			igreg.push(y);
+			Left.push(left);
+		}
+		xx = x;
+		yy = y;
+		if ( (X - xx) <= yy) {
+			yy -= (X - xx);
+			xx = X;
+		}
+		else {
+			xx += yy;
+			yy = 0;
+		}
+		if ( B[xx][yy] == 0) {
+			B[xx][yy] = 1;
+			iks.push(xx);
+			igreg.push(yy);
+			Left.push(left);
+		}
+		xx = x;
+		yy = y;
+		if ( (Y - yy) <= xx) {
+			xx -= (Y - yy);
+			yy = Y;
+		}
+		else {
+			yy += xx;
+			xx = 0;
+		}
+		if ( B[xx][yy] == 0) {
+			B[xx][yy] = 1;
+			iks.push(xx);
+			igreg.push(yy);
+			Left.push(left);
+		}
+	}
+	
+	
+	ans = 1e9;
+	for (i = 0; i <= 400; i ++) {
+		if ( A[i] == 1) {
+			ans = min(ans, abs(M - i));
+		}
+	}
+	cout << ans << endl;
+	
+}
