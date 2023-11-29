@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+// Eiler's graph function V - E + F = 2
+using namespace std;
+using ll =int ;
+int main() {
+	freopen("gates.in", "r", stdin);
+	freopen("gates.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j;
+
+	cin >> n ;
+
+	string str;
+	
+	cin >> str;
+	set < pair < ll, ll > > S, Hewtee, Bosoo;
+	x = y = 1000;
+	for (i = 0; i < n; i ++) {
+		S.insert({x, y});
+		if ( str[i] == 'N') {
+			Hewtee.insert({x, y});
+			y --;
+		}
+		if ( str[i] == 'S') {
+			y ++;
+			Hewtee.insert({x, y});
+		}
+		if ( str[i] == 'W') {
+			Bosoo.insert({x, y});
+			x --;
+		}
+		if ( str[i] == 'E') {
+			x ++;
+			Bosoo.insert({x, y});
+		}
+		S.insert({x, y});
+	}	
+	ll V, E, F;
+	E = Bosoo.size() + Hewtee.size();
+	V = S.size();
+	cout << E - V + 1 << endl;
+	
+}
