@@ -1,0 +1,95 @@
+#include<bits/stdc++.h>
+ 
+using namespace std;
+using ll =int ;
+string str[102];
+ll Used[103][12];
+ll n, k;
+vector < pair < ll, ll > > Co;
+
+bool YvjBolhuu(ll x, ll y) {
+	if ( x >= 1 && x <= n && y >= 1 && y <= 10 && Used[x][y] == 0) return true;
+	return false;
+}
+void Go(ll x, ll y) {
+	Used[x][y] = 1;
+	Co.push_back({x, y});
+	if ( YvjBolhuu(x, y + 1) && str[x][y - 1] == str[x][y]) Go(x, y + 1);
+	if ( YvjBolhuu(x, y - 1) && str[x][y- 2] == str[x][y - 1]) Go(x, y - 1);
+	if ( YvjBolhuu(x + 1, y) && str[x + 1][y - 1] == str[x][y - 1]) Go(x + 1, y);
+	if ( YvjBolhuu(x - 1, y) && str[x - 1][y - 1] == str[x][y - 1]) Go(x - 1, y);
+	return ;
+}
+void Clear() {
+	ll i, j;
+	for (i = 1; i <= 100; i ++) {
+		for (j = 1; j <= 10; j ++) {
+			Used[i][j] = 0;
+		}
+	}
+}
+bool Check() {
+	bool Deleted = false;
+	ll i, j;
+	Clear();
+	for (i = 1; i <= n; i ++) {
+		for (j = 0; j < 9; j ++) {
+			if ( str[i][j] != '0') {
+				Co.clear();
+				Go(i, j + 1);
+				if ( Co.size() >= k) {
+					for (pair < ll, ll > PP : Co) {
+						str[PP.first][PP.second - 1] = '0';
+					}
+					Deleted = true;
+				}
+			}
+		}
+	}
+	return Deleted;
+}
+
+void Unagaa() {
+	ll r;
+	for (ll j = 0; j <= 9; j++) {
+		vector < ll > Ve;
+		for (ll i = 1; i <= n; i ++) {
+			if ( str[i][j] != '0') {
+				Ve.push_back(ll(str[i][j] - '0'));
+			}
+		}
+		r = n;
+		for (ll i = Ve.size() - 1; i >= 0; i --) {
+			str[r][j] = char(Ve[i] + 48);
+			r --;
+		}
+		while ( r > 0) {
+			str[r][j] = '0';
+			r --;
+		}
+	}
+	return ;
+}
+
+int main() {
+	freopen("mooyomooyo.in", "r", stdin);
+	freopen("mooyomooyo.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, m, ans, s, cntsum, sum, r, p, i, j, K, R, c, r1, c1;
+	
+	cin >> n >> k;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> str[i];
+	}
+	
+	while(1) {
+		if(!Check()) break;
+		Unagaa();
+		
+	}
+	for (i = 1; i <= n; i ++) {
+		cout << str[i] << endl;
+	}
+}
