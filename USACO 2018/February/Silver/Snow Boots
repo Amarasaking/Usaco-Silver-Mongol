@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll a[505], Deep[505], CanGo[505], Ans = 1e9, n, m, j;
+ll A[505][505];
+void Go(ll x, ll ind) {
+	if (ind == m + 1) return ;
+	if ( Deep[ind] < a[x]) {
+		Go(x, ind + 1);
+		return ;
+	}
+	
+	if ( A[x][ind] == 1) return ;
+	A[x][ind] = 1;
+//	cout << x << " " << ind << endl;
+	if ( x>= n) {
+		Ans = min(Ans, ind);
+		return ;
+	}
+	for (j = min(n, x + CanGo[ind]); j > x; j --) {
+		if (a[j] <= Deep[ind]) {
+			Go(j, ind);
+			break;
+		}
+	}
+	Go(x, ind + 1);
+	return ;
+}
+int main() {
+	freopen("snowboots.in", "r", stdin);
+	freopen("snowboots.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t,ans, s, sum, x, y, r, p, i;
+
+	cin >> n >> m;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];
+	}
+	for (i = 1; i <= m; i ++) {
+		cin >> Deep[i] >> CanGo[i];
+	}
+	Go(1, 1);
+	cout << Ans - 1 << endl;
+	
+}
