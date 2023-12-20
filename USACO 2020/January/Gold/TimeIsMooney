@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll dp[3][2003], cost[2003], Used[3][2003];
+int main() {
+	freopen("time.in", "r", stdin);
+	freopen("time.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, I, ans, s, sum, x, y, r, p, i, j, k, C;
+	
+	cin >> n >> m >> C;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> cost[i];
+	}
+	vector < pair < ll, ll > > v;
+	for (i = 1; i <= m; i ++) {
+		cin >> x >> y;
+		v.push_back({x, y});
+	}
+	Used[0][1] = Used[1][1]= 1;
+	ans = 0;
+	for ( I = 1; I <= 1000; I ++) {
+		r = I % 2;
+		for ( auto X : v) {
+			if ( Used[r][X.first] == 0) continue;
+			Used[1 - r][X.second] = 1;
+			dp[1 - r][X.second] = max(dp[1 - r][X.second] , dp[r][X.first] + cost[X.second]);
+		}
+		ans = max(ans, dp[r][1] - (I - 1) * (I - 1) * C);
+	}
+	cout<< ans << endl;
+	
+}
