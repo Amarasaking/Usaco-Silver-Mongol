@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll tsaas[3][23], chuluu[3][23], haich[3][23]; 
+int main() {
+	freopen("hps.in", "r", stdin);
+	freopen("hps.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j, k;
+	
+	cin >> n >> k;
+	
+	char ch;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> ch;
+		r = i % 2;
+		if ( ch == 'P') {
+			for (j = 0; j <= k; j++) {
+				tsaas[r][j] = max(tsaas[1 - r][j] + 1, tsaas[r][j]);
+				if ( j > 0) tsaas[r][j] = max(tsaas[r][j], max(haich[1 - r][j - 1], chuluu[1 - r][j- 1]) + 1);
+				if ( j >= 0) {
+					haich[r][j] = max(haich[r][j], haich[1 - r][j]);
+					haich[r][j + 1] = max(haich[r][j + 1], max(tsaas[1 - r][j], chuluu[1 - r][j]));
+					chuluu[r][j] = max(chuluu[r][j], chuluu[1 - r][j]);
+					chuluu[r][j + 1] = max(chuluu[r][j + 1], max(tsaas[1 - r][j], haich[1 - r][j]));
+				}
+			}
+		}
+		if ( ch == 'S') {
+			for (j = 0; j <= k; j++) {
+				haich[r][j] = max(haich[r][j], haich[1 - r][j] + 1);
+				if ( j > 0) haich[r][j] = max(haich[r][j], max(chuluu[1 - r][j - 1], tsaas[1 - r][j- 1]) + 1);
+				if ( j >= 0) {
+					tsaas[r][j] = max(tsaas[r][j], tsaas[1 - r][j]);
+					tsaas[r][j + 1] = max(tsaas[r][j + 1], max(haich[1 - r][j], chuluu[1 - r][j]));
+					chuluu[r][j] = max(chuluu[r][j], chuluu[1 - r][j]);
+					chuluu[r][j + 1] = max(chuluu[r][j + 1], max(haich[1 - r][j], tsaas[1 - r][j]));
+				}
+			}
+		}
+		if ( ch == 'H') {
+			for (j = 0; j <= k; j++) {
+				chuluu[r][j] = max(chuluu[1 - r][j] + 1, chuluu[r][j]);
+				if ( j > 0) chuluu[r][j] = max(chuluu[r][j], max(haich[1 - r][j - 1], tsaas[1 - r][j- 1]) + 1);
+				if ( j >= 0) {
+					haich[r][j] = max(haich[r][j], haich[1 - r][j]);
+					haich[r][j + 1] = max(haich[r][j + 1], max(tsaas[1 - r][j], chuluu[1 - r][j]));
+					tsaas[r][j] = max(tsaas[r][j], tsaas[1 - r][j]);
+					tsaas[r][j + 1] = max(tsaas[r][j + 1], max(haich[1 - r][j], chuluu[1 - r][j]));
+				}
+			}
+			
+		}
+		/*
+		for (j = 0; j <= k; j ++) {
+			cout << haich[r][j] << " " << chuluu[r][j] << " " << tsaas[r][j] << endl; 
+		}
+		cout << endl;
+		*/
+	}
+	cout << max(haich[n%2][k], max(chuluu[n%2][k], tsaas[n%2][k])) << endl;
+	
+}
