@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+const ll mod = 1e9 + 9;
+ll n, m, k, a[1002], b[1002];
+ll dp[1001][1001][11];
+void Solve() {
+	ll m, x, y, i, p, j, r, ans, Min = 1e9;
+	
+	cin >> n >> m >> k;
+	
+	for (i = 1; i <=n; i ++) {
+		cin >> a[i];
+	}	
+	for (i = 1; i <= m; i ++) {
+		cin >> b[i];
+	}
+	sort ( a + 1, a + n + 1);
+	sort ( b + 1, b + m + 1);
+	dp[0][0][0] = 1;
+	for (i = 1; i <= n; i ++) {
+		dp[i][0][0] =1;
+		for (j = 1; j <= m; j ++) {
+			dp[i][j][0] = 1;
+			for ( r = 1; r <= k; r ++) {
+				dp[i][j][r] = (dp[i][j - 1][r] + dp[i - 1][j][r] - dp[i - 1][j - 1][r] + mod + mod) % mod;
+				if ( a[i] > b[j]) dp[i][j][r] = (dp[i][j][r] + dp[i - 1][j - 1][r - 1]) % mod;
+		//		cout<< i << " " <<j << " " << r <<" " << dp[i][j][r] << endl;
+			}
+		}
+	}
+	cout<< dp[n][m][k]% mod << endl;
+}
+
+int main() {
+	freopen("team.in", "r", stdin);
+	freopen("team.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	Solve();
+}
