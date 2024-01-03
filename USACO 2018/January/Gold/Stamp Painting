@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+const ll N = 1e6 + 2;
+const ll mod = 1e9 + 7;
+ll dp[N];
+
+ll Pow(ll x, ll y) {
+	if ( y == 0) return 1;
+	if ( y == 1) return x;
+	ll r = Pow(x, y/2);
+	r = r * r;
+	r = r % mod;
+	if ( y % 2 == 1) r = r * x;
+	r %= mod;
+	return r;
+}
+
+void Solve() {
+	ll n, m, k,i, s, r, p;
+	
+	cin >> n >> m >> k;
+	
+	dp[0] =0;	
+	for (i = 1; i <= n; i ++) {
+		if ( i >= k) {
+			dp[i] = m * dp[i - 1] % mod;
+			r = (m - 1) * dp[i - k];
+			r = r % mod;
+			dp[i] = (dp[i] - r + mod) % mod;
+		}
+		else {
+			dp[i] = (dp[i - 1] + Pow(m, i)) % mod;		
+		}
+	//	cout << dp[i] << endl;
+	}
+	r = (dp[n] - dp[n - 1] + mod ) % mod;
+	p = Pow(m, n);
+	p = p - r;
+	p = (p + mod) % mod;
+	cout << p << endl;
+	
+}
+
+int main() {
+	freopen("spainting.in", "r", stdin);
+	freopen("spainting.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	Solve();
+}
