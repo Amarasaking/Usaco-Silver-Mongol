@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll a[30][30], Pre[100005][30];
+ll dp[100005][28], dpmin[100005], cost[100005][30];
+int main() {
+	freopen("cowmbat.in", "r", stdin);
+	freopen("cowmbat.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll N, M, K, i, j, r;
+
+	cin >> N >> M >> K;
+	
+	string S;
+	
+	cin >> S;
+	
+	for (i = 1; i <= M; i ++) {
+		for (j = 1; j <= M; j ++) {
+			cin >> a[i][j];
+		}
+	}
+	
+	for (i = 1; i <= M; i ++) {
+		for (j = 1; j <= M; j ++) {
+			for ( r = 1; r<= M; r ++) {
+				a[j][r] = min(a[j][r], a[j][i] + a[i][r]);
+			}
+		}
+	}
+	for (i = 1; i <= N; i ++) {
+		for (j = 1; j <= M; j ++) {
+			cost[i][j] = a[S[i - 1] - 'a' + 1][j];
+			Pre[i][j] = Pre[i - 1][j] + cost[i][j];
+		}
+	}
+	memset (dp, 0x3f, sizeof dp);
+	memset (dpmin, 0x3f, sizeof dpmin);
+	dpmin[0] = 0;
+	for (i = 1; i <= N; i ++) {
+		for (j = 1; j<= M; j++) {
+			dp[i][j] = min(dp[i][j],dp[i - 1][j] + cost[i][j]);
+		//	cout << i << " " << j << " " << dp[i][j] << endl;
+			if ( i >= K) dp[i][j] =min(dp[i][j], Pre[i][j] - Pre[i - K][j] + dpmin[i - K]);
+			dpmin[i] = min(dpmin[i], dp[i][j]); 
+		//	cout << i << " " << j << " " << dp[i][j] << endl;
+		}
+	}
+	cout << dpmin[N] << endl;
+}
