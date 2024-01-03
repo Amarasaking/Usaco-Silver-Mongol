@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+const ll mod = 1e9 + 7;
+const int MAX = 1000;
+ll dp[1002], dif[1002];
+ll a[102], n;
+ll Go(ll has) {
+	ll i, j, r;
+	for (i = 0; i <= a[1]; i ++) dp[i] = 1;
+	for (i = 2; i <= n; i ++) {
+		j = 0;
+		while ( j <= (a[i - 1] - has)) {
+			r = (a[i] - has - j) + 1;
+			if ( r < 0) break;
+			dif[0] = (dif[0] + dp[j]) % mod;
+			dif[r] = ((dif[r] - dp[j])% mod + mod) % mod;
+			j ++;
+		}
+		dp[0] =dif[0];
+		for (j =1; j <= a[i]; j ++) {
+			dp[j] = dp[j - 1] + dif[j];
+			dp[j] %= mod;
+		}
+		for ( j = 0; j <= MAX; j ++) dif[j] = 0;
+	}
+	return dp[0];
+}
+void Solve() {
+	ll m, x, y, i, p, j, r, ans, Min = 1e9;
+	
+	cin >> n;
+	
+	a[0] = 0;
+	for (i =1; i <= n; i ++) {
+		cin >> a[i];
+		Min = min(Min, a[i]);
+	}
+	ans= 0;
+	if ( n % 2 == 1) {
+		for (i = 0; i<= Min; i ++) {
+			ans = (ans + Go(i)) % mod;
+		}
+	}
+	else {
+		ans = Go(0);
+	}
+	cout << ans << endl;
+	
+//	for (i = 1; i <= a[n]; i ++) {
+//		cout << n << " " << i << " " << dp[n][i] << endl;
+//		ans += dp[n][i];
+//	}
+}
+
+int main() {
+//	freopen("moocast.in", "r", stdin);
+//	freopen("moocast.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	Solve();
+}
