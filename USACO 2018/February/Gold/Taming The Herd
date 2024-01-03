@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+ll a[102], dp[102][102], n;
+
+ll Find(ll x, ll y) {
+//	cout << x << " " << y << endl;
+	if ( y == 1) {
+		ll i, cnt = 0;
+		for (i = x; i <= n; i ++) {
+			if ( a[i] != (i - x)) cnt ++;
+		}
+		dp[x][y] = cnt;
+		return cnt;
+	}
+	ll cnt, i, ans;
+	if ( x + y > n + 1) return 1e9;
+	if ( dp[x][y] != 1e9) return dp[x][y];
+	cnt = 1;
+	if ( a[x] == 0) cnt = 0;
+	ans = 1e9;
+	for (i = x + 1; i <= n; i ++) {
+		ans =min(ans, cnt + Find(i, y - 1));
+		if ( a[i] != i - x) cnt ++;
+	}
+	dp[x][y] = ans;
+//	cout << x << " " << y << " " << ans << endl;
+	return ans;
+}
+
+void Solve() {
+	ll m, x, y, i, p, j, r, ans, Min = 1e9;
+	
+	cin >> n;
+	
+	for (i = 0; i <= 100; i ++) for (j = 0; j <= 100; j ++) dp[i][j] = 1e9;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];
+	}
+	for (i = 1; i <= n; i ++) {
+		cout << Find(1, i) << endl;
+	}
+}
+
+int main() {
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	Solve();
+}
