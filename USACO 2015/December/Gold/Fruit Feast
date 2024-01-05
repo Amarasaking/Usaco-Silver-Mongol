@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = int;
+const int N = 5e6 + 2;
+ll dp[N];
+int main() {
+	freopen("feast.in", "r", stdin);
+	freopen("feast.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll i, ans, j, r, last, now, n, k, p, m,s;
+	
+	cin >> n >> m >> r;
+	
+	dp[0] = 1;	
+	for (i = 1; i <= n; i ++) {
+		if ( i >= m && dp[i - m] == 1) dp[i] = 1;
+		if ( i >= r && dp[i - r] == 1) dp[i] = 1;
+	}
+	ans= 0;
+	s = (m + r);
+	for (i = 0; i <= n; i ++) {
+		if ( dp[i] == 1) {
+			ans = max(ans,i);
+			if ( i + (r/2) <= n) ans = max(ans, i + (r/2));
+			if ( i + (m/2) <= n) ans = max(ans, i + (m/2));
+			if ( i + (s/2) <= n && s <= n) ans = max(ans, i + (s/2));
+		}
+	}
+	cout << ans << endl;
+}
