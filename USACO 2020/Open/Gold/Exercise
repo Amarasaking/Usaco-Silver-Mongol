@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll Si[100005], dp[2][100005];
+int main() {
+	freopen("exercise.in", "r", stdin);
+	freopen("exercise.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j, last, now, M;
+
+	cin >> n >> M;
+	
+	
+	vector < ll > v;	
+	for (i = 2; i<= n; i ++) {
+		if ( Si[i] != 0) continue;
+		v.push_back(i);
+		for (j = i * i; j <= n; j += i) {
+			Si[j] = i;
+		}
+	}
+	last= 1;
+	now = 0;
+	dp[0][0] = 1;
+	for (i = 0; i < v.size(); i ++) {
+		last ^= 1;
+		now ^= 1;
+		s = v[i];
+		for (j= 0; j<= n; j ++) dp[now][j] = dp[last][j];
+		while (s <= n) {
+			for (j = 0; j <= n; j ++) {
+				if ( j >= s) {
+					dp[now][j] = (dp[now][j] + dp[last][j - s] * s)% M;
+				}
+			}
+			s *= v[i];
+		}
+		
+	}
+	s = 0;
+	for (j =0; j <= n; j ++) {
+		s = (s + dp[now][j]) % M;
+	}
+	cout <<s  << endl;
+}
