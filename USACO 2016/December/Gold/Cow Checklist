@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll dp1[1003][1003], dp2[1003][1003];
+struct Co{
+	ll x, y;
+};
+ll D (ll x, ll y, ll X, ll Y) {
+	x = (x - X);
+	y = (y - Y);
+	x = x * x;
+	y = y * y;
+	x = x + y;
+	return x;
+} 
+int main() {
+	freopen("checklist.in", "r", stdin);
+	freopen("checklist.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll n, next, now, m, ans, s, sum, x, y, r, p, i, j, lo, hi, mid, H, G;
+	
+	cin >> H >> G;
+	
+	Co h[H + 2], g[G + 2];
+	
+	for (i = 1; i <= H; i ++) {
+		cin >> h[i].x >> h[i].y;
+	}
+	for (i = 1; i <= G; i ++) {
+		cin >> g[i].x >> g[i].y;
+	}
+	for (i = 0; i <= 1000; i ++) for (j = 0; j <= 1000; j ++) dp1[i][j] = 1e18, dp2[i][j] = 1e18;
+	
+	dp1[1][0] = 0;
+	for (i = 0; i <= H; i ++) {
+		for (j = 0; j <= G; j++) {
+			if (i >= 1 && dp2[i - 1][j] != 1e18) dp1[i][j] = min(dp1[i][j], dp2[i - 1][j] + D(h[i].x, h[i].y, g[j].x, g[j].y));
+			if ( i >= 2 && dp1[i - 1][j] != 1e18) dp1[i][j] = min(dp1[i][j], dp1[i - 1][j] + D(h[i].x , h[i].y, h[i - 1].x, h[i -1].y));
+			if ( j >= 2 && dp2[i][j - 1] != 1e18) dp2[i][j] = min(dp2[i][j], dp2[i][j - 1] + D(g[j - 1].x, g[j - 1].y, g[j].x, g[j].y));
+			if ( j >= 1 && dp1[i][j - 1] != 1e18) dp2[i][j] = min(dp2[i][j], dp1[i][j - 1] + D(h[i].x , h[i].y, g[j].x, g[j].y));
+	//		cout << i << " " << j << " " << dp1[i][j] << " " << dp2[i][j] << endl;
+		}
+	}
+	cout << dp1[H][G] << endl;
+}
