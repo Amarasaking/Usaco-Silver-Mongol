@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll mod = 1e9 + 7;
+
+ll N, W;
+ll t[252], w[252];
+bool Check(ll mid) {
+	ll r, j, p, p1;
+	ll dp[1004];
+	for (j = 0; j <= 1000; j ++) dp[j] = -1e18;
+	dp[0] = 0;
+	for (j = 1; j<= N; j ++) {
+		r = 1000 * t[j] - w[j] * mid;
+		for (p = W; p >= 0; p --) {
+			p1 =min(W, p + w[j]);
+			if ( dp[p] != -1e18) dp[p1] = max(dp[p1], dp[p] + r);
+		}
+	}	
+	return dp[W] >= 0;
+}
+
+int main() {
+	freopen("talent.in", "r", stdin);
+	freopen("talent.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll n, next, now, m, ans, s, sum, x, y, r, p, i, j, lo, hi, mid;
+	
+	cin >> N >> W;
+	
+	lo = 0;
+	hi = 1e6;
+	
+	for (i = 1; i <= N; i ++) {
+		cin >> w[i] >> t[i];
+	}
+	
+	while ( lo < hi) {
+		mid = (lo + hi)/2;
+		
+		if ( Check(mid)) lo = mid + 1;
+		else hi = mid;
+	}
+	cout << lo - 1 << endl;
+	
+	
+}
