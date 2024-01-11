@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+struct Co {
+	ll x, y;
+};
+ll D(Co& A, Co& B) {
+	return (A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y);
+}
+Co J, B;
+ll dp[1002][1002];
+bool Bo[1002][1002] = {false};
+vector < Co > John, Bessie;
+	
+ll Find(ll x, ll y) {
+	if ( Bo[x][y] ) return dp[x][y];
+	Bo[x][y] = 1;;
+	if ( x == 0) {
+		return dp[x][y] = Find(x, y - 1) + D(John[x], Bessie[y]);
+	}
+	if ( y == 0) {
+		return dp[x][y] = Find(x - 1, y)  + D(John[x], Bessie[y]);
+	}
+	return dp[x][y] = min(Find(x - 1, y), min(Find(x, y - 1), Find(x - 1, y - 1)) + D(John[x] , Bessie[y]));
+}
+
+void Solve() {
+	ll N, M, i, j;
+	
+	cin >> N >> M;
+	
+	cin >> J.x >> J.y;
+	cin >> B.x >> B.y;
+
+	string john, bessie;
+	
+	cin >> john >> bessie;
+	
+	Bo[0][0] = true;
+	dp[0][0] = D(J, B);
+	John.push_back(J);
+	Bessie.push_back(B);
+	for ( char ch : john) {
+		if ( ch == 'N') J.y ++; 
+		if ( ch == 'E') J.x ++;
+		if ( ch == 'S') J.y --;
+		if ( ch == 'W') J.x --;
+		John.push_back(J);
+	}
+	for (char ch : bessie) {
+		if ( ch == 'N') B.y ++; 
+		if ( ch == 'E') B.x ++;
+		if ( ch == 'S') B.y --;
+		if ( ch == 'W') B.x --;
+		Bessie.push_back(B);
+	}
+	cout << Find(john.size(), bessie.size()) << endl;
+	for (i = 0; i <= john.size(); i ++) {
+		for (j = 0; j <= bessie.size(); j ++) {
+			cout <<i << " " << j << " " << dp[i][j] << endl;
+		}
+	}
+}
+int main() {
+//	freopen("radio.in", "r", stdin);
+//			freopen("radio.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	Solve();
+	
+}
