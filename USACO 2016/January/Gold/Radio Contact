@@ -23,7 +23,7 @@ ll Find(ll x, ll y) {
 	if ( y == 0) {
 		return dp[x][y] = Find(x - 1, y)  + D(John[x], Bessie[y]);
 	}
-	return dp[x][y] = min(Find(x - 1, y), min(Find(x, y - 1), Find(x - 1, y - 1)) + D(John[x] , Bessie[y]));
+	return dp[x][y] = min(Find(x - 1, y) , min(Find(x, y - 1), Find(x - 1, y - 1)) + D(John[x] , Bessie[y]));
 }
 
 void Solve() {
@@ -39,7 +39,8 @@ void Solve() {
 	cin >> john >> bessie;
 	
 	Bo[0][0] = true;
-	dp[0][0] = D(J, B);
+	memset(dp, 63, sizeof dp);
+	dp[0][0] = 0;
 	John.push_back(J);
 	Bessie.push_back(B);
 	for ( char ch : john) {
@@ -56,16 +57,20 @@ void Solve() {
 		if ( ch == 'W') B.x --;
 		Bessie.push_back(B);
 	}
-	cout << Find(john.size(), bessie.size()) << endl;
-	for (i = 0; i <= john.size(); i ++) {
-		for (j = 0; j <= bessie.size(); j ++) {
-			cout <<i << " " << j << " " << dp[i][j] << endl;
+	
+	for (i = 0; i < John.size() - 1; i ++) {
+		for (j = 0; j < Bessie.size() - 1; j ++) {
+			dp[i + 1][j] = min(dp[i + 1][j] , dp[i][j] + D(John[i + 1], Bessie[j]));
+			dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + D(John[i], Bessie[j + 1]));
+			dp[i + 1][j + 1] = min(dp[i + 1][j + 1], dp[i][j] + D(John[i + 1], Bessie[j + 1]));
+			
 		}
 	}
+	cout << dp[John.size() - 1][Bessie.size() - 1] << endl;
 }
 int main() {
-//	freopen("radio.in", "r", stdin);
-//			freopen("radio.out", "w", stdout);
+	freopen("radio.in", "r", stdin);
+			freopen("radio.out", "w", stdout);
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	Solve();
