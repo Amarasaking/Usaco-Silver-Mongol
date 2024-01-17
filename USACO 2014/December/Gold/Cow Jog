@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+int main() {
+	freopen("cowjog.in", "r", stdin);
+	freopen("cowjog.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll x, y, i, j, r, s, t, N, T;
+	
+	cin >> N >> T;
+	
+	vector < pair < ll, ll > > v;
+	
+	for (i = 1; i <= N; i ++) {
+		cin >> x >> y;
+		y = x + y * T;
+		v.push_back({x, y});
+	}
+	sort(v.begin(), v.end(), [](pair<ll, ll>& A, pair < ll, ll >& B){
+		if ( A.first == B.first) return A.second < B.second;
+		return A.first > B.first;
+	});
+	vector < ll > q;
+	for (i = 0; i < v.size(); i ++) {
+		q.push_back(v[i].second);
+	}
+	vector < ll > V;
+	
+	for (i =0 ; i < q.size(); i ++) {
+		r = q[i];
+		
+		r = upper_bound(V.begin(),V.end(), q[i]) - V.begin();
+	//	cout << r << " " << q[i] << endl;
+		if ( r == V.size()) V.push_back(q[i]);
+		else V[r] = q[i];
+	}
+	cout << V.size() << endl;
+	
+}
