@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll dp[3][502][502];
+ll mod = 1e9 + 7;
+int main() {
+	freopen("palpath.in", "r", stdin);
+	freopen("palpath.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, N, bagana1, bagana2, mur1, mur2, urt, I, cost, e, k, ans, s, sum, x, y, r, p, i, j, now, last;
+	
+	cin >> n;
+	
+	string str[n];
+	
+	for (i = 0; i < n; i ++) {
+		cin >> str[i];
+	}
+	now = 0;
+	last = 1;
+	for (i = 0; i < n; i ++) {
+		dp[0][i][i] = 1;	
+	}
+	sum = n - 1;
+	for (urt = 1; urt < n; urt ++) {
+		last ^=1;
+		now ^= 1;
+		bagana1 = sum + 1;
+		for ( mur1 = 0; mur1 < n; mur1 ++) {
+			bagana1 = (n- 1 - mur1) - urt ;
+			if ( bagana1 < 0 || bagana1 >= n) continue;
+			
+			for (mur2 = 0; mur2 < n; mur2 ++) {
+				bagana2 = (n - 1 - mur2) + urt ;
+				dp[now][mur1][mur2] = 0;
+				if ( str[mur1][bagana1] != str[mur2][bagana2]) continue;
+				dp[now][mur1][mur2] = dp[last][mur1][mur2];
+	//		cout << mur1 << " " << bagana1 << " " << mur2 << " " << bagana2 << " " << dp[now][mur1][mur2] << endl;
+				if ( mur1 + 1 <= mur2 - 1) dp[now][mur1][mur2] += dp[last][mur1 + 1][mur2 - 1];
+	//		cout << mur1 << " " << bagana1 << " " << mur2 << " " << bagana2 << " " << dp[now][mur1][mur2] << endl;
+				if ( mur1 + 1 <= mur2) dp[now][mur1][mur2] += dp[last][mur1 + 1][mur2];
+	//		cout << mur1 << " " << bagana1 << " " << mur2 << " " << bagana2 << " " << dp[now][mur1][mur2] << endl;
+				if ( mur1 <= mur2 - 1) dp[now][mur1][mur2] += dp[last][mur1][mur2 - 1];
+		//		cout << mur1 << " " << bagana1 << " " << mur2 << " " << bagana2 << " " << dp[now][mur1][mur2] << endl;
+		dp[now][mur1][mur2] %= mod;
+			}
+		}
+	}
+	cout << dp[now][0][n - 1] << endl;
+	
+	
+}
