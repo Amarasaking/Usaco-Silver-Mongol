@@ -1,0 +1,120 @@
+#include<bits/stdc++.h>
+ 
+using namespace std;
+using ll = long long;
+const ll N = 2e5 + 1;
+
+int n, l; 
+vector < int > adj[N];
+
+int height[N], ans[N], value[N];
+
+int A[N];
+int timer = 0;
+int tin[N], tout[N], in[N], out[N];
+int up[N][20];
+int Has[4*N];
+
+void dfs(int v, int p) {
+	in[v] = ++timer;
+	up[v][0] = p;
+	for ( int i = 1; i <= 19; i ++) {
+		up[v][i] = up[up[v][i -1]][i - 1];
+	}
+	
+	for ( int u : adj[v]) {
+		if (u != p) dfs(u, v);
+	}
+	out[v] = ++timer;
+	return ;
+}
+
+bool is_ancestor(int u, int v) {
+	return in[u] <= in[v] && out[u] >= out[v];
+}
+
+int lca(int u, int v) {
+	if ( is_ancestor(u, v)) return u;
+	if ( is_ancestor(v, u)) return v;
+	for (int i = 19; i >= 0; i --) {
+		if ( !is_ancestor(up[u][i], v)) u = up[u][i];
+	}
+	return up[u][0];
+}
+int cnt =0;
+void euler_tour(int v, int p, int dist) {
+	ans[v] ^= value[v];
+	tin[v] = ++cnt;
+	for ( int u : adj[v]) {
+		if ( u != p) {
+			ans[u] = ans[v];
+			euler_tour(u, v, dist + 1);
+		}
+	}
+	tout[v] = cnt;
+}
+
+void Update(int p, int lo, int hi, int l, int r, int x) {
+	if ( l <= lo && hi <= r) {
+		Has[p] ^= x;
+		return ;
+	}
+	if ( l > hi || lo > r) return ;
+	int mid = (lo +hi)/2;
+	Has[2 * p] ^= Has[p];
+	Has[2 * p + 1] ^= Has[p];
+	Has[p] = 0;
+	Update(2 *p, lo, mid, l, r, x);
+	Update(2 * p + 1, mid + 1, hi, l, r, x);
+}
+int Find(int p, int lo, int hi, int x) {
+	if ( lo == hi) return Has[p];
+	Has[2 * p] ^= Has[p];
+	Has[2 * p + 1] ^= Has[p];
+	Has[p] = 0;
+	int mid = (lo + hi)/2;
+	if ( x <= mid) return Find(2 * p, lo, mid, x);
+	return Find(2 * p + 1, mid + 1, hi, x);
+}
+
+int main() {
+	freopen("cowland.in", "r", stdin);
+	freopen("cowland.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll n, q, i, X, Y, x, y, r;
+	
+	cin >> n >> q;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> value[i];
+	}
+	
+	for (i = 1; i < n; i ++) {
+		cin >> x >> y;
+		adj[x].push_back(y);
+		adj[y].push_back(x);
+	}
+	
+	euler_tour(1, 1, 0);
+	dfs(1, 1);
+	
+	
+	while ( q --) {
+		cin >> x;
+		if ( x == 2) {
+			cin >> x >> y;
+			X = ans[x] ^ Find(1, 1, n, tin[x]) ;
+			Y = ans[y] ^ Find(1, 1, n, tin[y]);
+			X = X ^ Y ^ value[lca(x, y)];
+			
+			cout << X << endl;
+		}
+		else {
+			cin >> x >> y;
+			Update(1, 1, n, tin[x], tout[x], y ^ value[x]);
+			value[x]= y;
+		
+		}
+	}
+}
