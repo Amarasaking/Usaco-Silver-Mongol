@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll >;
+
+struct moo {
+	ll h, w, s;
+};
+
+const int N = 1048577;
+moo a[N];
+pll dp[N];
+int main() {
+	freopen("guard.in", "r", stdin);
+	freopen("guard.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans, s, sum, x, y, r, p, i, j, h;
+	
+	cin >> n >> h;
+	
+	for (i = 0; i < n; i ++) {
+		cin >> a[i].h >> a[i].w >> a[i].s;
+	}
+	ans = -1;
+	dp[0] = {0, 1e9};
+	for (i = 1; i < (1 << n); i ++) {
+		dp[i] = {0, -1};
+		for (j = 0; j < n; j ++) {
+			if ( (i & (1 << j))) {
+				dp[i].first += a[j].h;
+				r = i ^ (1 << j);
+				dp[i].second = max(dp[i].second, min(dp[r].second - a[j].w, a[j].s));
+			}
+		}
+		if ( dp[i].first >= h) {
+			ans = max(ans, dp[i].second);
+		}
+	}
+	if ( ans < 0) {
+		cout << "Mark is too tall" << endl;
+		return 0;
+	}
+	cout << ans << endl;	
+}
