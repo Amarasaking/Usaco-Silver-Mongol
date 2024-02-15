@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+bool B[1002][1002][3];
+ll dp[1002][1002][3];
+ll a[1002], n, init;
+
+
+int main() {
+	freopen("cowrun.in", "r", stdin);
+	freopen("cowrun.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll i, r, j, left;
+
+	cin >> n;
+	
+	for (i = 0; i < n; i++) cin >> a[i];
+	
+	sort (a , a + n);
+	
+	memset(dp, 64, sizeof dp);
+	init = dp[0][0][0];
+	for (i = n - 1; i >= 0; i --) {
+		for (j = i; j <= n -1; j ++) {
+			if ( i == j) {
+				dp[i][j][0] = dp[i][j][1] = abs(a[i]) * n;
+				continue;
+			}
+			left = n - (j - i );
+			if ( i < n) dp[i][j][0] = min(dp[i + 1][j][0] + left * abs(a[i + 1] - a[i]), dp[i + 1][j][1] + left * abs(a[j] - a[i]));
+			if (j > 0) dp[i][j][1] = min(dp[i][j - 1][0] + left * abs(a[j] - a[i]), dp[i][j - 1][1] + left * abs(a[j] - a[j - 1]));
+		}
+	}
+	cout << min(dp[0][n -1][1], dp[0][n - 1][0]) << endl;
+}
