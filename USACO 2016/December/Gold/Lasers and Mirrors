@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll >;
+vector < pll > X[400005], Y[400005];
+ll x[400005], y[400005];
+ll Dis[400005];
+map < ll, ll > to, mp;
+
+struct bfs{
+	ll x, y, ind, type;
+};
+void Go(ll x, ll y, ll ind, ll type) {
+	queue < bfs > q;
+	q.push({x, y, ind, type});
+	while ( !q.empty()) {
+		bfs R = q.front();
+		q.pop();
+		x = R.x;
+		y = R.y;
+		ind = R.ind;
+		type = R.type;
+		if ( type == 1) {
+			for ( pll S : X[x]) {
+				if (Dis[S.second] == 1e9) {
+					Dis[S.second] = Dis[ind] + 1;
+					q.push({x, S.first, S.second, 0});
+				}
+			}
+		}
+		else {
+			for ( pll S : Y[y]) {
+				if (Dis[S.second] == 1e9) {
+					Dis[S.second] = Dis[ind] + 1;
+					q.push({S.first, y, S.second, 1});
+				}
+			}
+		}
+	}
+}
+
+
+int main() {
+	freopen("lasers.in", "r", stdin);
+	freopen("lasers.out", "w", stdout);
+	ll n, i, rn, stx, sty, fnx, fny, cnt, ans;
+	
+	cin >> n >> stx >> sty >> fnx >> fny;
+	n += 2;
+	x[1] = stx;
+	y[1] = sty;
+	x[n] = fnx;
+	y[n] = fny;
+	for (i = 2; i < n; i ++) {
+		cin >> x[i] >> y[i];
+	}
+	for (i = 1; i <= n; i ++) {
+		mp[x[i]] = 1;
+		mp[y[i]] = 1;
+	}
+	
+	cnt = 1;
+	for ( auto R : mp) {
+		to[R.first] = cnt;
+		cnt ++;
+	}
+	
+	for (i = 1; i <= n; i ++) {
+		x[i] = to[x[i]];
+		y[i] = to[y[i]];
+		X[x[i]].push_back({y[i], i});
+		Y[y[i]].push_back({x[i], i});
+	}
+	ans = 1e9;
+	for (i = 1; i <= n; i ++) Dis[i] = 1e9;
+	Dis[1] = 0;
+	Go(x[1], y[1], 1, 1);
+	ans =min(ans, Dis[n]);
+	for (i = 1; i <= n; i ++) Dis[i] = 1e9;
+	Dis[1] = 0;
+	Go(x[1], y[1], 1, 0);
+	ans= min(ans, Dis[n]);
+	ans --;
+	cout << ans << endl;
+	
+}
