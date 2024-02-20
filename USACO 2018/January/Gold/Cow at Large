@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+const int N = 1e5;
+
+vector < int > adj[N];
+queue < int > ex;
+vector < int > Dis(N, -1);
+vector < int > Used(N, -1);
+set < int > Ans;
+void Go(int x) {
+	for ( int X : adj[x]) {
+		if ( Dis[X] == -1) {
+			Dis[X] = Dis[x] + 1;
+			Go(X);
+		}
+	}
+	return ;
+}
+void Dfs(int x) {
+	int p = 0;
+	for ( int X : adj[x]) {
+		if ( Used[X] == -1 && Dis[X] == 0) {
+			p = 1;
+			Dis[X] = 1;
+			Dfs(X);
+		}
+		else if ( Used[X] != -1) Ans.insert(X);
+	}
+}
+
+int main() {
+	freopen("atlarge.in", "r", stdin);
+	freopen("atlarge.out", "w", stdout);
+	int n, m, i, j, x, y, r, p;
+	
+	cin >> n >> m;
+	
+	for ( i= 1; i < n; i ++) {
+		cin >> x >> y;
+		adj[x].push_back(y);
+		adj[y].push_back(x);
+	}
+	
+	for (i = 1; i <= n; i ++) {
+		if ( adj[i].size() == 1) ex.push(i), Used[i] = 0;
+	}
+	Dis[m] = 0;
+	Go(m);
+	while(!ex.empty()) {
+		r = ex.front();
+		ex.pop();
+		p = 0;
+		for ( int X : adj[r]) {
+			if (Used[X] == -1 && Dis[X] >= Used[r] + 1) {
+				p =1;
+				Used[X] = Used[r] + 1;
+				ex.push(X);
+			}
+		}
+	}
+	for (i = 1; i <= n; i ++)  Dis[i] = 0;
+	Dis[m]= 1;
+	Dfs(m);
+	
+	cout << Ans.size() << endl;
+}
