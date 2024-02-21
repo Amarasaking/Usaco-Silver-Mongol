@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+struct Q {
+	int x, y, cost;
+};
+struct Asuult {
+	int cost, x, index;
+};
+
+bool cmp (Q& A, Q& B) {
+	return A.cost > B.cost;
+}
+bool Cmp (Asuult& A, Asuult& B) {
+	return A.cost > B.cost;
+}
+Q a[100005];
+int Ans[100005];
+int mx = 1;
+int ataman[100005], hemjee[100005];
+int Avah(int x) {
+	if ( x != ataman[x]) return ataman[x] = Avah(ataman[x]);
+	return x;
+}
+
+bool Negtgeh(int x, int y) {
+	x = Avah(x);
+	y = Avah(y);
+	if ( x == y) return false;
+	if ( hemjee[x] < hemjee[y]) swap(x, y);
+	ataman[y] = x;
+	hemjee[x] += hemjee[y];
+	mx = max(mx, hemjee[x]);
+	return true;
+}
+
+int main() {
+	freopen("mootube.in", "r", stdin);
+	freopen("mootube.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	int n, q, i, ans, r, j, x, y;
+	
+	cin >> n >> q;
+	
+	for (i = 1; i <= n; i ++) {
+		hemjee[i] = 1;
+		ataman[i] = i;
+	}
+	for (i = 1; i < n; i ++) {
+		cin >> a[i].x >> a[i].y >> a[i].cost;
+	}
+	sort ( a + 1, a + n, cmp);
+	
+	vector < Asuult > v;
+	
+	for (i = 1; i <= q; i ++) {
+		cin >> x >> y;
+		v.push_back({x, y,i});
+	}
+	sort(v.begin(), v.end(), Cmp);
+	
+	j = 1;
+	for (i = 0; i < v.size(); i ++) {
+		while (j < n && a[j].cost >= v[i].cost) {
+			Negtgeh(a[j].x, a[j].y);
+			j ++;
+		}
+		r = Avah(v[i].x);
+		Ans[v[i].index] = hemjee[r];
+	}
+	
+	for (i = 1; i <= q; i ++) {
+		cout<< Ans[i] - 1<<endl;
+	}
+}
