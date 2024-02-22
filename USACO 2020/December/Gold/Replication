@@ -1,0 +1,124 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = int ;
+using pll = pair < ll, ll >;
+
+ll a[1002][1002], n;
+ll RDis[1002][1002], SDis[1002][1002], Dis[1002][1002];
+ll X[] = {-1, 0, +1, 0}, Y[] = {0, -1, 0, +1};
+bool In(ll x, ll y) {
+	if ( x >= 1 && x <= n && y >= 1 && y <= n && a[x][y] == 1) return true;
+	return false;
+}
+struct Co {
+	ll x, y;
+};	
+struct Core {
+	ll x, y, cost;
+};
+int main() {
+//	freopen("moocast.in", "r", stdin);
+//	freopen("moocast.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, m, ans, s, sum, x, y, cost, x1, y1, r, p, i, j, cnt = 0;
+	
+	cin >> n >> m;
+	
+	string str;
+	
+	queue < Co > strt, rock;
+	
+	for (i = 1; i <= n; i++) {
+		for (j = 1; j <= n; j ++) {
+			RDis[i][j] = SDis[i][j] = -1;
+		}
+	}
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> str;
+		
+		for (j = 0; j < n; j ++) {
+			if ( str[j] == 'S') {
+				SDis[i][j + 1] = 0;
+				strt.push({i, j + 1});
+				a[i][j + 1] = 1;
+				cnt ++;
+			}
+			if ( str[j] == '#') {
+				RDis[i][j + 1] = 0;
+				rock.push({i, j + 1});
+				a[i][j + 1] = 0;
+			}
+			if ( str[j] == '.') {
+				a[i][j + 1] = 1;
+			}
+		}
+	}	
+	while (!rock.empty()) {
+		x = rock.front().x;
+		y = rock.front().y;
+		rock.pop();
+		for (i = 0; i <= 3; i ++) {
+			x1 = x + X[i];
+			y1 = y + Y[i];
+			if ( RDis[x1][y1] == -1 && In(x1, y1)) {
+				rock.push({x1, y1});
+				RDis[x1][y1] = RDis[x][y] + 1;
+			}
+		}
+	}
+/*	for (i = 1; i <= n; i ++) {
+		for (j = 1; j <= n; j ++) {
+			cout << RDis[i][j] << " ";
+		}
+		cout << endl;
+	}
+	*/
+	queue < Core > Q;
+	while (!strt.empty()) {
+		x = strt.front().x;
+		y = strt.front().y;
+	//	cout << pp<< endl;
+		ll pp = RDis[x][y];
+	//	cout << pp << endl;
+		Q.push({x, y, pp});
+		Dis[x][y] = max(Dis[x][y], pp);
+	//	cout << x << " " << y << " " << pp << endl;
+		strt.pop();
+		for (i = 0; i <= 3; i ++) {
+			x1 = x + X[i];
+			y1 = y + Y[i];
+	//		cout << x1<< " " << y1 << " " << RDis[x1][y1] << " " << SDis[x][y] << " " << RDis[x][y] << endl;
+			if (SDis[x1][y1] == -1 && In(x1, y1) && RDis[x1][y1] >= ((SDis[x][y])/m ) + 1  && RDis[x][y] >= ((SDis[x][y] )/ m) + 1 ) {
+				strt.push({x1, y1});
+				SDis[x1][y1] = SDis[x][y] + 1;
+			}
+		}
+	}
+	for (i =1; i <= n; i ++) for (j = 1; j <= n; j ++) SDis[i][j] = 0;
+	set < pll > Ss;
+	ans = 0;	
+	while ( !Q.empty()) {
+		x = Q.front().x;
+		y = Q.front().y;
+		cost = Q.front().cost;
+		
+		Ss.insert({x, y});
+		Q.pop();
+		if ( Dis[x][y] == 1) {
+			continue;
+		}
+		for (i = 0; i <= 3; i ++) {
+			x1 = x + X[i];
+			y1 = y + Y[i];
+			if (In(x1, y1) && Dis[x1][y1] < Dis[x][y] -1) {
+				Dis[x1][y1] = max(Dis[x1][y1],Dis[x][y] - 1);
+				Q.push({x1, y1, cost - 1});
+			}
+		}
+	}
+	cout << Ss.size() << endl;
+	
+}
