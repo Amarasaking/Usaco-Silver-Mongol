@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+const int MaxN = 2e5 + 2;
+int ataman[MaxN], hemjee[MaxN], edges[MaxN];
+vector < int > adj[MaxN];
+bool B[MaxN] = {false}, C[MaxN] = {false};
+int Get(int x) {
+    if ( x == ataman[x]) return x;
+    return ataman[x] =Get(ataman[x]);
+}
+void Unite(int x, int y) {
+    x = Get(x);
+    y = Get(y);
+    if ( x == y) return ;
+    ataman[x] = y;
+    hemjee[y] += hemjee[x];
+}
+int main() {
+    int N, M, i, x, y, ans;
+
+    cin >> N >> M;
+
+    multiset < pair < int, int > > ms;
+    for (i = 1; i <= M; i ++) {
+        cin >> x >> y;
+        edges[x] ++;
+        edges[y] ++;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+
+    for (i = 1; i <= N; i ++) {
+        ms.insert({edges[i], i});
+    }
+    vector < int > deleted, holbogdson;
+    for (i = 1; i <= N; i ++) {
+        pair < int, int > P = *ms.begin();
+        x = P.second;
+        y = P.first;
+        B[x] = true;
+        for ( int X : adj[x]) {
+            if ( B[X] == false) {
+                ms.erase({edges[X], X});
+                edges[X] --;
+                ms.insert({edges[X], X});
+            }
+        }
+        ms.erase({y, x});
+        deleted.push_back(x);
+        holbogdson.push_back(y);
+    }
+    reverse(deleted.begin(), deleted.end());
+    reverse(holbogdson.begin(), holbogdson.end());
+    for (i =1; i<= N; i ++) {
+        ataman[i] = i;
+        hemjee[i] = 1;
+    }
+    ans= 0;
+    for (i = 0; i < N; i ++) {
+        x = deleted[i];
+        C[x] = true;
+	        for ( int X : adj[x]) {
+            if (C[X]) {
+				Unite(X, x);
+     		}
+	    }
+        ans = max(ans, hemjee[Get(x)] * holbogdson[i]);
+    }
+    cout << ans << endl;
+}
