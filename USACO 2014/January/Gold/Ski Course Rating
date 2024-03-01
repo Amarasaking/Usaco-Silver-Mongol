@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+ll a[502][502], Ans[502], ataman[250004], hemjee[250004], Size[250006];
+
+ll N, M, T, ans = 0;
+ll Co(ll x, ll y) {
+	return (x - 1) * M + y;
+}
+
+ll Get(ll x) {
+	if ( x == ataman[x]) return x;
+	return ataman[x] = Get(ataman[x]);
+}
+
+void Unite(ll x, ll y, ll R) {
+	x = Get(x);
+	y = Get(y);
+	if ( x == y) return ;
+	if (hemjee[x] > hemjee[y]) swap(x, y);
+	if ( hemjee[y]+ hemjee[x] >= T) {
+		ataman[x] = y;
+		hemjee[y] += hemjee[x];
+		ans = ans + (R * (Size[y] + Size[x]));
+		Size[x] = 0;
+		Size[y] = 0;
+	}
+	else {
+		Size[y] += Size[x];
+		hemjee[y] += hemjee[x];
+		ataman[x]= y;
+	}
+	return ;
+}
+int main() {
+	freopen("skilevel.in", "r", stdin);
+	freopen("skilevel.out", "w", stdout);
+	ll i, j, x, r;
+	
+	cin >> N >> M >> T;
+	
+	vector < pair < ll, array < ll, 2> > > v;
+
+	for (i = 1; i <= N; i ++) {
+		for (j = 1; j <= M; j ++) {
+			cin >> a[i][j];
+			if ( i > 1) {
+				v.push_back({abs(a[i][j] - a[i - 1][j]), {Co(i, j), Co(i - 1, j)}});
+			}
+			if ( j > 1) {
+				v.push_back({abs(a[i][j] - a[i][j - 1]), {Co(i, j), Co(i, j - 1)}});
+			}
+		}
+	}
+	for (i = 1; i <= N; i ++) {
+		for (j = 1; j <= M; j ++) {
+			cin >> x;
+			r = Co(i, j);
+			hemjee[r] = 1;
+			ataman[r] = r;
+			if ( x == 1) {
+				Size[r] = 1;
+			}
+		}
+	}
+	sort(v.begin(), v.end());
+	
+	for (i = 0; i < v.size(); i ++) {
+		array < ll, 2 > arr;
+		arr =v[i].second;
+		Unite(arr[0], arr[1], v[i].first);
+	}
+	cout << ans << endl;
+}
