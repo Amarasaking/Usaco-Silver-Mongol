@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+ll atleast[100004], Used[100002], dp[100002];
+vector < pair <ll, ll > > adj[100005], jda[100005];
+vector < ll > g_sort;
+void Go(ll x) {
+	Used[x] =1;
+	for ( pair < ll, ll >& P : adj[x]) {
+		if ( Used[P.first] == 0) {
+			Go(P.first);
+		}
+	}
+	g_sort.push_back(x);
+	return ;
+}
+
+int main() {
+	freopen("timeline.in", "r", stdin);
+	freopen("timeline.out", "w", stdout);
+	ll N, M, C, i, x, y, c;
+	
+	cin >> N >> M >> C;
+	
+	for (i = 1; i <= N; i ++) cin >> atleast[i];
+	
+	for (i = 1; i <= C; i ++) {
+		cin >> x >> y >> c;
+		adj[x].push_back({y, c});
+		jda[y].push_back({x, c});
+	}
+	for (i = 1; i <= N; i ++) {
+		if (!Used[i] && jda[i].size() == 0) {
+			Go(i);
+		}
+	}
+	reverse(g_sort.begin(), g_sort.end());
+	
+	for ( ll I : g_sort) {
+		dp[I] = max(dp[I], atleast[I]);
+		for ( pair < ll, ll > P : jda[I]) {
+			i= P.first;
+			dp[I] = max(dp[I], dp[i] + P.second);
+		}
+	}
+	for (i = 1; i <= N; i ++) {
+		cout << dp[i] << endl;
+	}
+}
