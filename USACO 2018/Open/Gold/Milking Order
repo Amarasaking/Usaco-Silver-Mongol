@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+vector < vector < ll > > v;
+vector < ll > adj[100002];
+int n, m, used[100005], G[100005];
+vector <ll > g_sort;
+
+void Go(int x) {
+	used[x] = 1;
+	for ( int X : adj[x]) {
+		if (!used[X]) Go(X);
+	}
+	g_sort.push_back(x);
+} 
+
+bool Can(ll ind) {
+	g_sort.clear();
+	ll r, in[100004] = {0};
+	for (int i = 1; i <= n; i ++) adj[i].clear();
+	for (int j = 0; j < ind; j ++) {
+		for (int i = 1; i < v[j].size(); i ++) {
+			adj[v[j][i - 1]].push_back(v[j][i]);
+			in[v[j][i]] ++;
+		}
+	}
+	memset(used, 0, sizeof used);
+	priority_queue < ll, vector < ll > , greater< ll> > q;
+	for (int i = 1; i <= n; i ++) {
+		if (in[i] == 0) q.push(i);
+	}
+	ll cnt = 0;
+	while (!q.empty()) {
+		cnt ++;
+		r = q.top();
+		q.pop();
+		g_sort.push_back(r);
+		for ( int X : adj[r]) {
+			if ( --in[X] == 0) {
+				q.push(X);
+			}
+		}
+	}
+	if ( cnt != n) return false;
+	r = 0;
+	for ( int I : g_sort) G[I] = ++r;
+	for (int i = 1; i <= n; i ++) {
+		for ( int j : adj[i]) {
+			if(G[j] < G[i]) return false;
+		}
+	}
+	return true;
+}
+
+int main() {
+	freopen("milkorder.in", "r", stdin);
+	freopen("milkorder.out", "w", stdout);
+	int i, r, j, x, lo, hi, mid;
+	
+	cin >> n >> m;
+	
+		
+	for (i = 1; i <= m; i ++) {
+		cin >> r;
+		vector < ll > q;
+		for (j = 1; j <= r; j ++) {
+			cin >> x;
+			q.push_back(x);
+		}
+		v.push_back(q);
+	}
+	lo = 1;
+	hi = m;
+	while ( lo < hi) {
+		mid = (lo + hi)/2;
+		if (Can(mid)) lo = mid + 1;
+		else hi =mid;
+	}
+//	Can(lo );
+	for (i = 0; i < n; i ++) {
+		if ( i == n - 1) cout << g_sort[i] << endl;
+		else cout << g_sort[i] << " ";
+	}
+	
+}
