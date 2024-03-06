@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll >;
+using plll = pair < ll, pll >;
+
+ll X[] = {1, 0, -1, 0, 3, 0, -3, 0, 2, 2, 1, 1, -1, -1, -2, -2};
+ll Y[] = {0, 1, 0, -1, 0, 3, 0, -3, 1, -1, 2, -2, 2, -2, 1, -1};
+ll used[1002][1002] = {0}, a[1002][1002], D[1002][1002];
+int main() {
+	freopen("visitfj.in", "r", stdin);
+	freopen("visitfj.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, ans = 1e18, xx, yy, s, sum, x, y, r, p, i, j;
+
+	cin >> n >> m;
+	
+	for (i = 1; i <= n; i ++) for (j = 1; j <= n; j ++) cin >> a[i][j];
+	priority_queue < plll, vector < plll >, greater< plll > > pq;
+	memset(D, 127, sizeof(D));
+	D[1][1] =0;
+	pq.push({0, {1, 1}});
+	
+	while(!pq.empty()) {
+		x = pq.top().second.first;
+		y = pq.top().second.second;
+		pq.pop();
+		if ( used[x][y]) continue;
+		used[x][y] = 1;
+		for (i = 0; i < 16; i ++) {
+			xx = x + X[i];
+			yy = y + Y[i];
+			if ( xx < 1 || xx > n || yy > n || yy < 1) continue;
+			if ( D[xx][yy] > D[x][y] + 3 * m + a[xx][yy]) {
+				D[xx][yy] = D[x][y] + 3 * m + a[xx][yy];
+				pq.push({D[xx][yy], {xx, yy}});
+			}
+		}
+		s = n - x + n - y;
+		if ( s < 3) {
+			ans =min(ans, D[x][y] + s * m);
+		}
+	}
+	cout << min(ans, D[n][n]) << endl;
+}
