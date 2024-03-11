@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll >;
+
+vector < pair < ll, ll > > adj[10006];
+ll cows[10005], D[10005], Prev[10005], occ[10005];
+bool Used[10005] = {false};
+int main() {
+	freopen("shortcut.in", "r", stdin);
+	freopen("shortcut.out", "w", stdout);
+	ll N, M, ans, T, i, x, s, p, X, Cost, y, c;
+
+	cin >> N >> M >> T;
+	
+	for (i = 1; i <= N; i ++) cin >> cows[i];
+	
+	for (i = 1; i <= M; i ++) {
+		cin >> x >> y >> c;
+		adj[x].push_back({y, c});
+		adj[y].push_back({x, c});
+	}
+	
+	priority_queue < pll, vector < pll > , greater < pll > > pq;
+	
+	memset(D, 127, sizeof(D));
+	D[1] = 0;
+	pq.push({0, 1});
+	
+	while(!pq.empty()) {
+		x = pq.top().second;
+		pq.pop();
+		if ( Used[x] ) continue;
+		Used[x] = 1;
+		
+		for (pll& P : adj[x]) {
+			X = P.first;
+			Cost = P.second;
+			if (D[X] == D[x] + Cost && Prev[X] > x) {
+				Prev[X] = x;
+				pq.push({D[X], X});
+			}
+			else {
+				if ( D[X] > D[x] + Cost) {
+					D[X] = D[x] + Cost;
+					Prev[X] = x;
+					pq.push({D[X], X});
+				}
+			}
+		}
+	}
+	for (i = 1; i <= N; i ++) occ[i] = cows[i];
+	for (i = 1; i <= N; i ++) {
+		s = i;
+		p = cows[s];
+		while ( s != 0 ) {
+			occ[Prev[s]] += p;
+			s = Prev[s];
+		}
+	}
+	ans = 0;
+	for (i = 1; i <= N; i ++) {
+		ans = max(ans, occ[i] * (D[i] - T));
+	}
+	cout << ans << endl;
+	
+	
+}
