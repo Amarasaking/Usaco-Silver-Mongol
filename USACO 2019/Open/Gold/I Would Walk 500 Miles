@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using pll = pair < ll,ll >;
+
+const ll MOD = 2019201997LL;
+const ll FACTOR1 = 2019201913LL;
+const ll FACTOR2 = 2019201949LL;
+
+/**
+ * @return the number of miles cow a + 1 and b + 1 are willing to walk to see
+ * each other
+ */
+ll calc_length(ll a, ll b) {
+	if ( a > b) swap(a, b);
+	return (a * FACTOR1 + b * FACTOR2) % MOD;
+}
+
+/**
+ * Prim's Algorithm for dense graph to build the MST by scanning
+ * @return the edge lengths in the MST
+ */
+ll prim(int N, int K) {
+	vector<ll> dist(N + 1, MOD);
+	vector<bool> visited(N + 1, false);
+	priority_queue < pll, vector < pll > ,greater < pll > > pq;
+	dist[1] = 0;
+	ll r, j;
+	pq.push({0, 1});
+	for (int i = 0; i < N; i++) {
+		// find the nearest node to the current MST
+		r = pq.top().second;
+		pq.pop();
+		if ( visited[r]) continue;
+		visited[r] = 1;
+		for ( j = 1; j <= N; j ++) {
+			if (!visited[j] && dist[j] > calc_length(j, r)) {
+				dist[j] = calc_length(j, r);
+				pq.push({dist[j], j});
+			}
+		}
+	}
+	sort(dist.begin(), dist.end());
+	return dist[N - K + 1];
+}
+
+int main() {
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	cout << prim(N, K) << endl;
+}
