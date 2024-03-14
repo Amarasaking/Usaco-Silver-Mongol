@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll >;
+
+ll ataman[100005];
+ll x[100005], y[100005];
+vector < pll > bagana[12];
+vector < pair < ll, pll > > Q;
+ll Get(ll x) {
+	if (x == ataman[x]) return x;
+	return ataman[x] = Get(ataman[x]);
+}
+bool Unite(ll x, ll y) {
+	x = Get(x);
+	y = Get(y);
+	if ( x == y) return false;
+	ataman[x] = y;
+	return true;
+}
+ll D(ll x1, ll y1, ll x2, ll y2) {
+	x1 = (x1 - x2);
+	x1 = x1 * x1;
+	y1 = (y1 - y2);
+	y1 = y1 * y1;
+	return x1 + y1;
+}
+int main() {
+	ll n, i, j, p, i1, ans;
+	
+	cin >> n;
+	
+	for (i = 1; i <= n; i++) {
+		ataman[i] = i;
+		cin >> x[i] >> y[i];
+		bagana[y[i]].push_back({x[i], i});
+	}
+	for (i = 0; i<= 10; i ++) sort(bagana[i].begin(), bagana[i].end());
+	for (i = 1; i <= n; i ++) {
+		for (j = 0; j <= 10; j ++) {
+			pll A = {x[i], 0ll};
+			p = lower_bound(bagana[j].begin(), bagana[j].end(), A) - bagana[j].begin();
+			if ( p != bagana[j].size()) {
+				i1 = bagana[j][p].second;
+				Q.push_back({D(x[i], y[i], x[i1], y[i1]), {i, i1}});
+			}
+			p --;
+			if ( p >= 0) {
+				i1 = bagana[j][p].second;
+				Q.push_back({D(x[i], y[i], x[i1], y[i1]), {i, i1}});
+			}
+		}
+	}
+	sort(Q.begin(), Q.end());
+	ans = 0;
+	for ( auto& P : Q) {
+		if ( Unite(P.second.first, P.second.second)) {
+			ans += P.first;
+		}
+	}
+	cout << ans << endl;
+}
