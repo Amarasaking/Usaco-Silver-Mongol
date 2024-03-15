@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+using pll = pair < ll, ll > ;
+ll ataman[200005];
+struct Q {
+	ll cost, x, y, a, b;
+};
+ll Get(ll x) {
+	if ( x == ataman[x]) return x;
+	return ataman[x] = Get(ataman[x]);
+}
+
+void Unite(ll x, ll y) {
+	x = Get(x);
+	y = Get(y);
+	if ( x == y) return ;
+	if (x > y) swap(x, y);
+	ataman[x] =y;
+	return ;
+}
+int main() {
+//	freopen("moocast.in", "r", stdin);
+//	freopen("moocast.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll t, n, m, s, sum, x, y, r, p, i, j;
+	
+	cin >> n;
+	
+	Q a[n + 2];
+	
+	for (i = 1; i <= 2 * n; i ++) ataman[i] =i;
+	for (i = 0; i < n; i ++) {
+		cin >> a[i].cost >> a[i].x >> a[i].y >> a[i].a >> a[i].b;
+		Unite(a[i].x, a[i].y);
+		Unite(a[i].a, a[i].b);
+	}
+	vector < pair < ll, pll > > ans;
+	for (i = 0; i < n; i++) {
+		x = Get(a[i].x);
+		y = Get(a[i].a);
+		if (x != y) {
+			ans.push_back({a[i].cost, {x, y}});
+		}
+	}
+	for (i = 1; i <= 2 * n; i ++) ataman[i] = i;
+
+	sort(ans.begin(), ans.end());
+	sum =0;	
+	for ( pair < ll, pll >& P : ans) {
+		x = Get(P.second.first);
+		y = Get(P.second.second);
+		if ( x != y) {
+			if ( x > y) swap(x, y);
+			ataman[x] = y;
+			sum += P.first;
+		}
+	}
+	cout << sum << endl;
+	
+}
