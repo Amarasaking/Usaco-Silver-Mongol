@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+
+int main() {
+	freopen("fencedin.in", "r", stdin);
+	freopen("fencedin.out", "w", stdout);
+	ll N, M, n, m, i, j, ans;
+	
+	cin >> N >> M >> n >> m;
+	
+	ll a[n + 5], b[m + 5], mur[n + 5], bagana[m + 5];
+	
+	for (i = 1; i <= n; i ++) cin >> a[i];
+	for (i = 1; i <= m; i ++) cin >> b[i];
+	sort ( a + 1, a + n + 1);
+	sort ( b + 1, b + m + 1);
+	a[0] = b[0] = 0;
+	a[n + 1] = N;
+	b[m + 1] = M;
+	for (i = 0; i <= n; i ++) mur[i] = a[i + 1] - a[i];
+	for (i = 0; i <= m; i ++) bagana[i] = b[i + 1] - b[i];
+	sort ( mur, mur + n + 1);
+	sort(bagana, bagana + m + 1);
+	i = j = 1;
+	n ++;
+	m ++;
+	ans = mur[0] * (m - 1) + bagana[0] * (n - 1);
+	while ( i < n && j < m) {
+		if ( mur[i] <= bagana[j]) {
+			ans  = ans + (mur[i++] * (m - j ));
+		}
+		else {
+			ans = ans + (bagana[j++] * (n - i ));
+		}
+	}
+	cout << ans << endl;
+	
+}
