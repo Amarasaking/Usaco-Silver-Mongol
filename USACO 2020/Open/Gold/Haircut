@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+const ll N = 2e5 + 2;
+ll mod = 1e9 + 7;
+ll T[4 * N];
+void Build(ll p, ll lo, ll hi) {
+	if ( lo == hi) {
+		T[p] = 1;
+		return ;
+	}
+	ll mid = (lo + hi)/2;
+	Build(2 * p, lo, mid);
+	Build(2 * p + 1, mid + 1, hi);
+	T[p] = T[2 * p] + T[2 * p + 1];
+}
+void Update(ll p, ll lo, ll hi, ll x, ll y) {
+	if ( lo == hi) {
+		T[p] = y;
+		return ;
+	}
+	ll mid = (lo + hi)/2;
+	if ( x <= mid) Update(2 * p, lo, mid, x, y);
+	else Update(2 * p + 1, mid + 1, hi, x, y);
+	T[p] = T[2 * p] + T[2 * p + 1];
+	T[p]%= mod;
+}
+ll Find(ll p, ll lo, ll hi, ll l, ll r) {
+	if (l > r) return 0;
+	if ( l > hi || lo > r) return 0;
+	if ( l <= lo && hi <= r) return T[p];
+	ll mid = (lo + hi)/2;
+	return (Find(2 * p, lo, mid, l, r) + Find(2 * p + 1, mid + 1, hi, l, r))% mod;
+}
+vector < ll > v[100005];
+
+int main() {
+	freopen("haircut.in", "r", stdin);
+	freopen("haircut.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll n, s, i, ans;
+	
+	cin >> n;
+	
+	ll a[n + 2];
+	
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];
+		v[a[i]].push_back(i);
+	}	
+	
+	s = 0;
+	Build(1, 1, N);
+	for (i = 0; i < n; i ++) {
+		cout << s << endl;
+		for ( ll X : v[i]) {
+			s += Find(1, 1, N, 1, X - 1);
+			Update(1, 1, N, X, 0);
+		}
+	}
+	
+}
