@@ -1,0 +1,118 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long ;
+const ll N = 2e5 + 2;
+#define lc (p<<1)
+#define rc (p<<1) + 1
+struct node {
+	ll sum;
+	ll lzhas;
+	ll lzadd;
+	ll min;
+};
+node tree[8 * N + 3];
+ll a[N + 5];
+
+void pushdown(ll p, ll lo, ll hi) {
+	if ( tree[p].lzhas == 1) {
+		ll mid = (lo +hi)/2;
+		tree[lc].sum = (tree[lc].sum + (mid - lo + 1) * tree[p].lzadd);
+		tree[rc].sum = (tree[rc].sum + (hi - mid) * tree[p].lzadd) ;
+		tree[lc].min += tree[p].lzadd;
+		tree[rc].min += tree[p].lzadd;
+		tree[lc].lzadd += tree[p].lzadd;
+		tree[rc].lzadd += tree[p].lzadd;	
+		tree[lc].lzhas = tree[rc].lzhas = 1;	
+		tree[p].lzadd = tree[p].lzhas = 0;
+	}
+}
+void pushup(ll p, ll lo, ll hi) {
+	tree[p].sum = (tree[lc].sum + tree[rc].sum);
+	tree[p].min = min(tree[lc].min, tree[rc].min);
+}
+
+void Build(ll p, ll lo, ll hi) {
+	tree[p].lzadd =tree[p].lzhas = 0;
+	if ( lo == hi) {
+		tree[p].sum =a[lo];
+		tree[p].min = a[lo];
+		return ; 
+	}
+	ll mid = (lo + hi)/2;
+	Build(lc, lo, mid);
+	Build(rc, mid + 1, hi);
+	pushup(p, lo, hi);
+}
+void update(ll p, ll lo, ll hi, ll l, ll r, ll x) {
+	ll mid = (lo + hi)/2;
+	pushdown(p, lo, hi);
+	if (lo > r || hi < l) return ;
+	if ( l <= lo && hi <= r) {
+		tree[p].sum = (tree[p].sum + ((hi - lo + 1) * x)) ;
+		tree[p].min += x;
+		tree[p].lzhas = 1;
+		tree[p].lzadd = x;
+		return ;
+	}
+	update(lc, lo, mid, l, r, x);
+	update(rc, mid + 1, hi, l, r, x);
+	pushup(p, lo, hi);
+	return ;
+}
+ll sumquery(ll p, ll lo, ll hi, ll l, ll r) {
+	ll mid = (lo + hi)/2;
+	if ( lo > r || hi < l) return 0;
+	pushdown(p, lo, hi);
+	if(l <= lo && hi <= r) {
+		return tree[p].sum;
+	}
+	pushup(p, lo, hi);
+	return (sumquery(lc, lo, mid, l, r) + sumquery(rc, mid + 1, hi, l, r));
+}
+ll minquery(ll p, ll lo, ll hi, ll l, ll r) {
+	ll mid = (lo + hi)/2;
+	if ( lo > r || hi < l) return LONG_MAX;
+	pushdown(p, lo, hi);
+	if(l <= lo && hi <= r) {
+		return tree[p].min;
+	}
+	pushup(p, lo, hi);
+	return min(minquery(lc, lo, mid, l, r) , minquery(rc, mid + 1, hi, l, r));
+}
+void Solve() {
+	ll n, q, i, x, l, r, y;
+	
+	cin >> n >> q;
+	
+	for (i = 1; i <= n; i ++) {
+		cin >> a[i];		
+	}
+	
+	Build(1, 1, N);
+	while ( q --) {
+		char ch;
+		cin >> ch;
+		if ( ch == 'P') {
+			cin >> l >> r >> x;
+			update(1, 1, N, l, r, x);
+		}
+		if ( ch == 'M') {
+			cin >> l >> r;
+			cout << minquery(1, 1, N, l, r) << endl;	
+		}
+		if ( ch == 'S') {
+			cin >> l >> r;
+			cout << sumquery(1, 1, N, l, r) << endl;	
+		}
+	}
+}
+
+int main() {
+	freopen("haybales.in", "r", stdin);
+	freopen("haybales.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	Solve();
+}
